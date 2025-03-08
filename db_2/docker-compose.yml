@@ -1,0 +1,58 @@
+services:
+  # --------------------------------------------------------------------
+  # MySQL service configuration
+  db:
+    # Build the MySQL image using the Dockerfile in the ./MySQL directory
+    build:
+      context: ./MySQL
+      dockerfile: Dockerfile
+    # Set a custom container name for the MySQL service
+    container_name: ayala-sanchez-mysql_eam
+    # Automatically restart the container if it stops
+    restart: always
+    # Map port 3306 inside the container to port 4800 on the host machine
+    ports:
+      - 4800:3306
+    # Mount a volume to persist MySQL data
+    volumes:
+      - ./Config/mysql:/var/lib/mysql
+    # Set a custom hostname for the MySQL container
+    hostname: apps_database
+    # Connect the MySQL service to the eam_apps network
+    networks:
+      - eam_apps
+    # Healthcheck to monitor if MySQL is running correctly
+    healthcheck:
+      # Run a MySQL command to check if the service is healthy
+      test: [ "CMD", "mysql", "-u", "root", "-pkETeRmAtinSaCis." ]
+      # Set the interval between health checks to 30 seconds
+      interval: 30s
+      # Set a timeout of 10 seconds for each health check
+      timeout: 10s
+      # Retry health checks up to 5 times before considering the service unhealthy
+      retries: 5
+
+  # --------------------------------------------------------------------
+  # Adminer service configuration
+  # - Adminer is a tool for managing content in databases.
+  adminer:
+    # Use the official Adminer image from Docker Hub
+    image: adminer
+    # Set a custom container name for the Adminer service
+    container_name: ayala-sanchez-adminer_wms
+    # Automatically restart the container if it stops
+    restart: always
+    # Map port 8080 inside the container to port 9001 on the host machine
+    ports:
+      - 9001:8080
+    # Connect the Adminer service to the eam_apps network
+    networks:
+      - eam_apps
+# --------------------------------------------------------------------
+
+# Define a custom bridge network for communication between services
+networks:
+  eam_apps:
+    driver: bridge
+    # Set a custom name for the network
+    name: eam_apps
