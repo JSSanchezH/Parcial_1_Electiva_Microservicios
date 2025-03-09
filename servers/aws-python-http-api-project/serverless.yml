@@ -1,0 +1,29 @@
+service: aws-python-http-api-project
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: python3.9
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: /
+          method: get
+  returnFiveAttributes:
+    handler: handler.return_five_attributes
+    events:
+      - http:
+          path: /five
+          method: get
+  returnTenAttributes:
+    handler: handler.return_ten_attributes
+    events:
+      - http:
+          path: /ten
+          method: get
